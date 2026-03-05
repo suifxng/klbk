@@ -1,0 +1,3 @@
+<?php
+renderView('Account-detail');
+
