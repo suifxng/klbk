@@ -20,8 +20,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_update'])) {
         'max_user'    => (int)$_POST['max_user']
     ];
     
-
     if (updateEvent($eventId, $data, $userId)) {
+        
+        // 1. จัดการลบรูปภาพเก่า (ถ้ามีการติ๊กเลือกให้ลบ)
+        if (!empty($_POST['delete_images'])) {
+            foreach ($_POST['delete_images'] as $imagePath) {
+                deleteEventImage($eventId, $imagePath);
+            }
+        }
+
+        // 2. จัดการอัปโหลดรูปภาพใหม่ (ถ้ามีการเลือกไฟล์เพิ่ม)
+        if (!empty($_FILES['images']['name'][0])) {
+            insertEventImages($eventId, $_FILES['images']);
+        }
+
         header('Location: /Account-detail');
         exit;
     }
